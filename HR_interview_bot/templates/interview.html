@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview for {{ job_title }}</title>
+    
+</head>
+<body>
+    <h1>Interview for {{ job_title }}</h1>
+    <h2>Please read the instructions before answering</h2>
+    <h4>Ensure your answers are clear, short, and concise, avoiding unnecessary details</h4>
+    <h4>Avoid using abbreviations instead, provide the full expanded form to demonstrate a clear understanding of the concept.</h4>
+    <h4>Ensure that your language is technically accurate and reflects a strong understanding of the subject matter.</h4>
+    <h4>Be grammatically correct to convey professionalism and clarity in your response.</h4>
+    <form action="/evaluate_answers" method="POST">
+        {% for question in questions %}
+        <div>
+            <label for="question_{{ loop.index }}">{{ question }}</label>
+            <input 
+                type="text" 
+                id="question_{{ loop.index }}" 
+                name="{{ question }}" 
+                placeholder="Your answer here" 
+                required>
+        </div>
+        {% endfor %}
+        <button type="submit">Submit Answers</button>
+    </form>
+    

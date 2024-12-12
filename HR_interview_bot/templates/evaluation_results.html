@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluation Results</title>
+</head>
+<body>
+    <h1>Evaluation Results</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Your Answer</th>
+                <th>Result</th>
+                <th>Similarity Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for evaluation in evaluation_results %}
+            <tr>
+                <td>{{ evaluation.question }}</td>
+                <td>{{ evaluation.user_answer }}</td>
+                <td>{{ evaluation.result }}</td>
+                <td>{{ evaluation.score }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+
+

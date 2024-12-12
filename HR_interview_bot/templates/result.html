@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Matching Results</title>
+</head>
+<body>
+    <h1>Job Matching Results</h1>
+
+    <h2>Matched Jobs:</h2>
+    {% if matched_jobs %}
+        <ul>
+            {% for job in matched_jobs %}
+                {% if job.job_title and job.similarity %}
+                <li>
+                    {{ job.job_title }} - Similarity Score: {{ job.similarity }}
+                    <!-- Add hyperlink button to proceed to interview -->
+                    <a href="{{ url_for('start_interview', job_title=job.job_title) }}">
+                        <button>Proceed to Interview</button>
+                    </a>
+                </li>
+                {% else %}
+                    <li>{{ job }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No matching jobs found.</p>
+    {% endif %}
+</body>
+</html>

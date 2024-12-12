@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>HireSmart</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="/static/assets/css/main.css" />
+		<style>
+			/* Style for the yellow blocks section */
+			.quote-section {
+				background-color: #b3a5a5; /* Dark grey background */
+				padding: 40px 20px;
+				text-align: center;
+			}
+			.quote-container {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				gap: 20px;
+			}
+			.quote-block {
+				background-color: #ffe680; /* Slightly darker yellow background */
+				color: #5a4a02; /* Dark brown text color for better contrast */
+				width: 22%;
+				padding: 20px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+				border-radius: 5px;
+			}
+			.quote-block h3 {
+				font-size: 18px;
+				font-weight: bold;
+				margin-bottom: 10px;
+				color: #3b3001; /* Even darker brown for headings */
+			}
+			.quote-block p {
+				font-size: 16px;
+				line-height: 1.5;
+			}
+			.quote-block .icon {
+				font-size: 30px;
+				color: #3b3001; /* Darker icon for emphasis */
+			}
+		
+			@media (max-width: 768px) {
+				.quote-block {
+					width: 45%; /* Adjust block size for smaller screens */
+				}
+			}
+		
+			@media (max-width: 480px) {
+				.quote-block {
+					width: 90%; /* Full width on very small screens */
+				}
+			}
+		</style>
+		
+		<noscript><link rel="stylesheet" href="static/assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Page Wrapper -->
+		<div id="page-wrapper">
+
+			<!-- Header -->
+			<header id="header" class="alt">
+				<h1><a href="{{ url_for('home') }}">HireSmart</a></h1>
+				<nav>
+					<a href="#menu">Menu</a>
+				</nav>
+			</header>
+
+			<!-- Menu -->
+			<nav id="menu">
+				<div class="inner">
+					<h2>Menu</h2>
+					<ul class="links">
+						<li><a href="{{ url_for('home') }}">Home</a></li>
+						<li><a href="#about-us">About Us</a></li>
+						<li><a href="{{ url_for('signin') }}">Log In</a></li>
+						<li><a href="{{ url_for('signup') }}">Sign Up</a></li>
+					</ul>
+					<a href="#" class="close">Close</a>
+				</div>
+			</nav>
+
+			<!-- Banner -->
+			<section id="banner">
+				<div class="inner">
+					<div class="logo"><span class="icon fa-gem"></span></div>
+					<h2>Welcome to HireSmart</h2>
+					<p>Hiring made fast and easy</p>
+				</div>
+			</section>
+
+			<!-- Wrapper -->
+			<section id="wrapper">
+
+				<!-- About Us Section -->
+				<section id="about-us" class="wrapper spotlight style1">
+					<div class="inner">
+						<div class="content">
+							<h2 class="major">About Us</h2>
+							<p>HireSmart is an intelligent hiring solution designed to streamline recruitment processes. 
+							   Our mission is to make hiring fast, efficient, and accessible for businesses of all sizes. 
+							   With cutting-edge technology, we help employers find the perfect candidates quickly and reliably.</p>
+						</div>
+					</div>
+				</section>
+
+				<!-- Yellow Blocks Section -->
+				<section class="quote-section">
+					<div class="quote-container">
+						<div class="quote-block">
+							<span class="icon">&ldquo;</span>
+							<h3>Effortless Screening</h3>
+							<p>Save time with automated recruitment—our AI handles initial screening, reducing oversight and freeing up HR resources.</p>
+						</div>
+						<div class="quote-block">
+							<span class="icon">&ldquo;</span>
+							<h3>Skill-Based Matching</h3>
+							<p>We match candidates to roles based on their unique skills, ensuring the best fit for both companies and job seekers.</p>
+						</div>
+						<div class="quote-block">
+							<span class="icon">&ldquo;</span>
+							<h3>Enhanced Recruitment Efficiency</h3>
+							<p>Achieve instant, accurate candidate-role alignment, improving recruitment speed and quality.</p>
+						</div>
+						<div class="quote-block">
+							<span class="icon">&ldquo;</span>
+							<h3>Better Hiring Experience</h3>
+							<p>Our tool provides an efficient process for HR teams and a seamless, rewarding experience for candidates.</p>
+						</div>
+					</div>
+				</section>
+
+			</section>
+
+		</div>
+
+		<!-- Scripts -->
+		<script src="static/assets/js/jquery.min.js"></script>
+		<script src="static/assets/js/jquery.scrollex.min.js"></script>
+		<script src="static/assets/js/browser.min.js"></script>
+		<script src="static/assets/js/breakpoints.min.js"></script>
+		<script src="static/assets/js/util.js"></script>
+		<script src="static/assets/js/main.js"></script>
+
+		<footer class="footer">
+			<p>&copy; 2024 HireSmart</p>
+		</footer>
+		
+		<style>
+			/* Footer styles */
+			.footer {
+				background-color: #333333; /* Dark grey background to match the page */
+				color: hsl(48, 100%, 75%); /* Light yellow text for contrast and consistency */
+				text-align: center;
+				padding: 45px 0;
+				font-size: 18px;
+				font-family: 'Arial', sans-serif;
+				box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow at the top */
+				position: relative;
+				bottom: 0;
+				width: 100%;
+			}
+			.footer p {
+				margin: 0;
+			}
+		</style>		
+
+	</body>
+</html>
