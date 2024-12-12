@@ -34,7 +34,7 @@ collection = chroma_client.get_or_create_collection(collection_name)
 def load_company_data_to_chromadb(file_path):
     """Load company details from an Excel file into ChromaDB if not already loaded."""
     # Read the data from Excel
-    df = pd.read_excel(file_path, usecols=["jobTitle", "jobUrl", "jobDescription"])
+    df = pd.read_excel(file_path, usecols=["jobTitle", "jobUrl", "jobDescription", "jobCompany"])
     
     # Fetch existing metadata to find already stored job titles
     existing_metadatas = collection.get(include=["metadatas"])["metadatas"]
@@ -46,7 +46,11 @@ def load_company_data_to_chromadb(file_path):
         if row["jobTitle"] not in existing_ids:  # Check if the jobTitle is already in the collection
             collection.add(
                 documents=[row["jobDescription"]],  # Add the job description as the document
-                metadatas=[{"jobTitle": row["jobTitle"], "jobUrl": row["jobUrl"]}],  # Add metadata
+                metadatas=[{
+                    "jobTitle": row["jobTitle"], 
+                    "jobUrl": row["jobUrl"],
+                    "jobCompany": row["jobCompany"]  # Add the company name to metadata
+                }],  
                 ids=[row["jobTitle"]]  # Use jobTitle as a unique identifier
             )
             new_records += 1
