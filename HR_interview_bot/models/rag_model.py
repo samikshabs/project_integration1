@@ -115,14 +115,14 @@ def process_resume_and_match_jobs(pdf_file):
     # Step 1: Extract raw text from the resume
     resume_text = extract_text_from_pdf(pdf_file)
 
-    # Step 2: Retrieve job descriptions from ChromaDB
+    # Step 2: Retrieve job descriptions and metadata from ChromaDB
     results = collection.get(include=["documents", "metadatas"])
     job_descriptions = results["documents"]
-    job_titles = [metadata["jobTitle"] for metadata in results["metadatas"]]
+    metadatas = results["metadatas"]  # Metadata contains jobTitle, jobUrl, and potentially jobCompany
 
     if not job_descriptions:
         return {
-            "matched_jobs": ["No job descriptions available in ChromaDB."]
+            "matched_jobs": [{"job_title": "No job descriptions available", "job_company": "", "similarity_score": 0}]
         }
 
     # Step 3: Match the resume text with job descriptions using TF-IDF and cosine similarity
@@ -133,15 +133,66 @@ def process_resume_and_match_jobs(pdf_file):
 
         cosine_similarities = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:]).flatten()
         top_indices = cosine_similarities.argsort()[-5:][::-1]  # Top 5 matches
-
+        
         matched_jobs = [
-            {"job_title": job_titles[i], "similarity": cosine_similarities[i]}
+            {
+                "job_title": metadatas[i]["jobTitle"],
+                "job_company": metadatas[i].get("jobCompany", "Unknown"),
+                "similarity_score": round(cosine_similarities[i] * 100*1.5, 2)
+            }
             for i in top_indices
         ]
     except ValueError as e:
-        matched_jobs = [f"Error in processing job matching: {e}"]
+        matched_jobs = [{"job_title": "Error in processing job matching", "job_company": "", "similarity_score": 0}]
 
     return {"matched_jobs": matched_jobs}
+
+
+from sentence_transformers import SentenceTransformer, util
+
+# Load SBERT model
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+def evaluate_answer(question, answer, correct_answer):
+    # Preprocess the text (case-insensitive, trim spaces)
+    def preprocess_text(text):
+        return " ".join(text.strip().lower().split())
+
+    # Check for keyword presence
+    def contains_keyword(user_answer, correct_answer):
+        # Split into words and check if any predefined keyword is in the user's answer
+        predefined_keywords = correct_answer.lower().split()  # Lowercase for case-insensitivity
+        user_words = user_answer.lower().split()
+        return any(keyword in user_words for keyword in predefined_keywords)
+
+    # Preprocess all inputs
+    question_cleaned = preprocess_text(question)
+    user_answer_cleaned = preprocess_text(answer)
+    correct_answer_cleaned = preprocess_text(correct_answer)
+
+    # Keyword validation
+    keyword_match = contains_keyword(user_answer_cleaned, correct_answer_cleaned)
+
+    # Encode for semantic similarity
+    question_embedding = model.encode(question_cleaned, convert_to_tensor=True)
+    user_answer_embedding = model.encode(user_answer_cleaned, convert_to_tensor=True)
+    correct_answer_embedding = model.encode(correct_answer_cleaned, convert_to_tensor=True)
+
+    # Calculate cosine similarity between user and correct answer embeddings
+    cosine_sim = util.pytorch_cos_sim(user_answer_embedding, correct_answer_embedding).item()
+    score_percentage = round(cosine_sim * 100, 2)
+    # Set a similarity threshold (e.g., 0.7 for semantic similarity)
+    similarity_threshold = 0.55
+
+    # Determine the result
+    if keyword_match and cosine_sim >= similarity_threshold:
+        result = "Correct"
+    else:
+        result = "Incorrect"
+    
+    return result, score_percentage
+
+
 
 # Define the functions that generate questions for each role
 
@@ -1691,49 +1742,3 @@ def get_question_answer_mapping():
         ("Which type of analysis is crucial for improving social media engagement?"): "A/B testing",
         ("What is the key factor in analyzing competitor performance on social media?"): "Benchmarking",
     }
-
-from sentence_transformers import SentenceTransformer, util
-
-# Load SBERT model
-model = SentenceTransformer('all-MiniLM-L6-v2')
-
-def evaluate_answer(question, answer, correct_answer):
-    # Preprocess the text (case-insensitive, trim spaces)
-    def preprocess_text(text):
-        return " ".join(text.strip().lower().split())
-
-    # Check for keyword presence
-    def contains_keyword(user_answer, correct_answer):
-        # Split into words and check if any predefined keyword is in the user's answer
-        predefined_keywords = correct_answer.lower().split()  # Lowercase for case-insensitivity
-        user_words = user_answer.lower().split()
-        return any(keyword in user_words for keyword in predefined_keywords)
-
-    # Preprocess all inputs
-    question_cleaned = preprocess_text(question)
-    user_answer_cleaned = preprocess_text(answer)
-    correct_answer_cleaned = preprocess_text(correct_answer)
-
-    # Keyword validation
-    keyword_match = contains_keyword(user_answer_cleaned, correct_answer_cleaned)
-
-    # Encode for semantic similarity
-    question_embedding = model.encode(question_cleaned, convert_to_tensor=True)
-    user_answer_embedding = model.encode(user_answer_cleaned, convert_to_tensor=True)
-    correct_answer_embedding = model.encode(correct_answer_cleaned, convert_to_tensor=True)
-
-    # Calculate cosine similarity between user and correct answer embeddings
-    cosine_sim = util.pytorch_cos_sim(user_answer_embedding, correct_answer_embedding).item()
-
-    # Set a similarity threshold (e.g., 0.7 for semantic similarity)
-    similarity_threshold = 0.55
-
-    # Determine the result
-    if keyword_match and cosine_sim >= similarity_threshold:
-        result = "Correct"
-    else:
-        result = "Incorrect"
-    
-    return result, cosine_sim
-
-
