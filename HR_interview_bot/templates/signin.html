@@ -123,10 +123,18 @@
 		<h1>HireSmart</h1>
 	</div>
 
-	<!-- Back to Home button with a back arrow symbol -->
-	<button class="back-button" onclick="window.location.href='index.html';">
-		←
-	</button>
+<!-- Back to Home button with a back arrow symbol -->
+<button class="back-button" onclick="goHome()">
+    ←
+</button>
+
+<script>
+    function goHome() {
+        window.location = "{{ url_for('home') }}";
+    }
+</script>
+
+
 
 	<h1>Log In</h1>
 	<form action="{{ url_for('signin') }}" method="POST">
